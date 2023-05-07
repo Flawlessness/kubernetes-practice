@@ -1,0 +1,80 @@
+---
+
+- name: Update repository index
+  hosts: localhost
+  become: yes
+  pre_tasks:
+
+    - name: Update repository index
+      tags: always
+      apt:
+        update_cache: yes
+
+- name: Install Docker
+  hosts: localhost
+  become: yes
+  tasks:
+
+    - name: Install packages to allow apt to use a repository over HTTPS
+      tags: always
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg2
+          - software-properties-common
+
+    - name: Add Docker’s official GPG key
+      tags: always
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    - name: Add the Docker repository
+      tags: always
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+
+    - name: Install Docker
+      tags: always
+      apt:
+        name: docker-ce
+        state: present
+
+- name: Install Minikube and kubectl on Debian
+  hosts: localhost
+  become: true
+
+  tasks:
+  
+    - name: Add Kubernetes apt key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add Kubernetes apt repository
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        
+    - name: Install kubectl
+      apt:
+        name: kubectl
+        state: present
+
+    - name: Download Minikube binary
+      get_url:
+        url: "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
+        dest: "/usr/local/bin/minikube"
+        mode: "a+x"
+        owner: minikube-user
+        group: minikube-user
+
+    - name: Add Minikube binary to the PATH
+      lineinfile:
+        path: ~/.bashrc
+        line: 'export PATH=/usr/local/bin:$PATH'
+        state: present
+        create: yes
+

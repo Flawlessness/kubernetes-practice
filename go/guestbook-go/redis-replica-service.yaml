@@ -1,0 +1,16 @@
+# Определяем объект Kubernetes Service
+kind: Service
+apiVersion: v1
+metadata: # Метаданные Service
+  name: redis-replica # Название Service
+  labels:
+    app: redis # Метка для отслеживания ресурсов
+    role: replica # Метка для отслеживания роли приложения
+spec: # Спецификация Service
+  ports:
+  - port: 6379 # Порт, на котором будет работать Service
+    targetPort: redis-server # Порт, на котором работает Redis-сервер
+  selector:   # Селектор, который определяет, какие поды будут обслуживаться Service
+    app: redis # Метка для поиска подходящих ресурсов
+    role: replica # Метка для поиска подходящих ресурсов
+

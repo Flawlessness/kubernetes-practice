@@ -1,0 +1,23 @@
+# Определяем объект Kubernetes ReplicationController
+kind: ReplicationController
+apiVersion: v1
+metadata: # Метаданные ReplicationController
+  name: guestbook # Название ReplicationController
+  labels:
+    app: guestbook # Метка для отслеживания ресурсов
+spec: # Спецификация ReplicationController
+  replicas: 3 # Количество экземпляров приложения, которые должны быть созданы и управляемы ReplicationController
+  selector:
+    app: guestbook # Селектор для поиска подходящих ресурсов
+  template: # Шаблон Pod, который будет создан и управляем ReplicationController
+    metadata:
+      labels:
+        app: guestbook # Метка для отслеживания ресурсов внутри Pod
+    spec:
+      containers:
+      - name: guestbook # Название контейнера
+        image: registry.k8s.io/guestbook:v3 # Образ контейнера
+        ports:
+        - name: http-server # Название порта, на котором работает приложение
+          containerPort: 3001 # Порт, на котором работает приложение
+

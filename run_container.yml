@@ -1,0 +1,31 @@
+- name: Run minikube
+  hosts: localhost
+  tasks:
+
+    - name: Start Minikube in Docker
+      tags: start
+      shell: 'minikube start --driver=docker'
+     
+    - name: Create the Redis master pod
+      tags: run
+      shell: 'kubectl create -f go/guestbook-go/redis-master-controller.yaml'
+      
+    - name: Create the Redis master service
+      tags: run
+      shell: 'kubectl create -f go/guestbook-go/redis-master-service.yaml'
+      
+    - name: Create the Redis replica pods
+      tags: run
+      shell: 'kubectl create -f go/guestbook-go/redis-replica-controller.yaml'
+      
+    - name: Create the Redis replica service
+      tags: run
+      shell: 'kubectl create -f go/guestbook-go/redis-replica-service.yaml'
+      
+    - name: Create the guestbook pods
+      tags: run
+      shell: 'kubectl create -f go/guestbook-go/guestbook-controller.yaml'
+      
+    - name: Create the guestbook service
+      tags: run
+      shell: 'kubectl create -f go/guestbook-go/guestbook-service.yaml'

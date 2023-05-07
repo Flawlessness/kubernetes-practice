@@ -1,0 +1,15 @@
+# Определяем объект Kubernetes Service
+kind: Service
+apiVersion: v1
+metadata: # Метаданные Service
+  name: guestbook # Название Service
+  labels:
+    app: guestbook # Метка для отслеживания ресурсов
+spec: # Спецификация Service
+  ports:
+  - port: 3001 # Порт, на котором работает приложение
+    targetPort: http-server # Порт, на котором работает приложение в контейнере
+  selector: # Селектор, который определяет, какие поды будут обслуживаться Service
+    app: guestbook # Метка для поиска подходящих ресурсов
+  type: LoadBalancer # Тип Service, который используется для предоставления доступа к приложению снаружи кластера
+
